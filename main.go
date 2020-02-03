@@ -89,4 +89,13 @@ func main() {
 		log.Fatal(err)
 	}
 	defer server.Close()
+
+	//creating new connections
+	for {
+		conn, err := server.Accept()
+		if err != nil {
+			log.Fatal(err)
+		}
+		go handleConn(conn)
+	}
 }
