@@ -115,7 +115,7 @@ func handleConn(conn net.Conn) {
 			}
 			newBlock, err := generateBlock(Blockchain[len(Blockchain)-1], bpm)
 			if err != nil {
-				log.Printf(err)
+				log.Println(err)
 				continue
 			}
 			if isBlockValid(newBlock, Blockchain[len(Blockchain)-1]) {
