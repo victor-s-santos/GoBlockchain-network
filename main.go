@@ -99,3 +99,7 @@ func main() {
 		go handleConn(conn)
 	}
 }
+
+func handleConn(conn net.Conn) {
+	defer conn.Close()
+}
