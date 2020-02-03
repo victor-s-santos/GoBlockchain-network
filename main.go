@@ -102,4 +102,42 @@ func main() {
 
 func handleConn(conn net.Conn) {
 	defer conn.Close()
+	//---//
+	io.WriteString(conn, "Entre com um novo valor de Batimentos Por Minuto:")
+	scanner := bufio.NewScanner(conn)
+
+	go func() {
+		for scanner.Scan() {
+			bpm, err := strconv.Atoi(scanner.Text())
+			if err != nil {
+				log.Printf("%v Não um número: %v", scanner.Text(), err)
+				continue
+			}
+			newBlock, err := generateBlock(Blockchain[len(Blockchain)-1], bpm)
+			if err != nil {
+				log.Printf(err)
+				continue
+			}
+			if isBlockValid(newBlock, Blockchain[len(Blockchain)-1]) {
+				newBlockchain := append(Blockchain, newBlock)
+				replaceChain(newBlockchain)
+			}
+			bcServer <- Blockchain
+			io.WriteString(conn, "\nEntre com um novo BPM:")
+		}
+	}()
+	//simulating receiving broadcast
+	go func() {
+		for {
+			time.Sleep(30 * time.Second)
+			output, err := json.Marshal(Blockchain)
+			if err != nil {
+				log.Fatal(err)
+			}
+			io.WriteString(conn, string(output))
+		}
+	}()
+	for _= range bcServer {
+		spew.Dump(Blockchain)
+	}
 }
