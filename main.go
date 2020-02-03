@@ -66,3 +66,20 @@ func replaceChain(newBlocks []Block) {
 		Blockchain = newBlocks
 	}
 }
+
+// bcServer handles incoming concurrent Blocks
+var bcServer chan []Block
+
+func main() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal(err)
+	}
+	bcServer = make(chan []Block)
+
+	//creating the genesis block
+	t := time.Now()
+	genesisBlock := Block{0, t.String(), 0, "", ""}
+	spew.Dump(genesisBlock)
+	Blockchain = append(Blockchain, genesisBlock)
+}
