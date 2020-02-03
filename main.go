@@ -82,4 +82,11 @@ func main() {
 	genesisBlock := Block{0, t.String(), 0, "", ""}
 	spew.Dump(genesisBlock)
 	Blockchain = append(Blockchain, genesisBlock)
+
+	//starting TCP server
+	server, err := net.Listen("tcp", ":"+os.Getenv("PORTA"))
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer server.Close()
 }
